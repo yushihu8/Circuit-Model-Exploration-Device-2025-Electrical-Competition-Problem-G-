@@ -44,8 +44,25 @@ Thumbs.db
 **/G_Project.runs/
 **/G_Project.sim/
 **/G_Project.ip_user_files/
+**/G_Project.hw/
 **/ip_user_files/
 **/sim/
+**/*.wcfg
+**/*.ila
+**/*.lpr
+**/*.dcp
+**/*.veo
+**/*.vho
+**/*_sim_netlist.v
+**/*_sim_netlist.vhdl
+**/*_stub.v
+**/*_stub.vhdl
+**/G_Project.srcs/sim_1/
+**/G_Project.srcs/sources_1/ip/**/doc/
+**/G_Project.srcs/sources_1/ip/**/hdl/
+**/G_Project.srcs/sources_1/ip/**/misc/
+**/G_Project.srcs/sources_1/ip/**/simulation/
+**/G_Project.srcs/sources_1/ip/**/synth/
 
 # Temporary / local files
 *.bak
