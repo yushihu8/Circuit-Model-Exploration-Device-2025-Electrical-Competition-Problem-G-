@@ -1,0 +1,136 @@
+/**
+ * 场景1：启动时测试FPGA连接是否正常
+ */
+void Test_FPGA_Connection(void)
+{
+    uint16_t id;
+    if(FPGA_SampMod_ReadID(&id) == HAL_OK)
+    {
+        if(id == 1234)  // FPGA代码中定义的ID
+        {
+            // ✅ 连接成功
+        }
+        else
+        {
+            // ⚠️ ID不匹配，检查FPGA是否正确烧录
+        }
+    }
+    else
+    {
+        // ❌ 通信失败，检查SPI接线
+    }
+}
+
+/**
+ * 场景2：设置DDS输出指定频率的正弦波
+ * 频率计算公式: f_out = (FTW / 2^32) * 125MHz
+ */
+void DDS_SetOutputFrequency(uint32_t frequency_hz)
+{
+    // 计算频率控制字
+    // FTW = (f_out * 2^32) / 125MHz
+    uint64_t ftw = ((uint64_t)frequency_hz << 32) / 125000000ULL;
+    
+    FPGA_DDSMod_SetFrequency((uint32_t)ftw);
+    
+    // 设置为正常输出模式
+    FPGA_DDSMod_SetMode(0);
+}
+
+/**
+ * 场景3：启动一次ADC采样（采集N个点）
+ */
+void Start_ADC_Sampling(uint16_t samplePoints)
+{
+    // 1. 清零之前的数据
+    FPGA_SampMod_ClearCounter();
+    HAL_Delay(5);
+    
+    // 2. 设置要采集的点数（最大4096）
+    FPGA_SampMod_SetSampNum(samplePoints);
+    HAL_Delay(5);
+    
+    // 3. 设置采样速率（抽取率）
+    // 值越大，采样越慢；值越小，采样越快
+    uint32_t sample_rate_ftw = 85899346;  // 示例值
+    FPGA_SampMod_SetFTW(sample_rate_ftw);
+    
+    // 现在FPGA会自动开始采样
+}
+
+/**
+ * 场景4：检查采样是否完成
+ */
+uint8_t Check_Sampling_Done(void)
+{
+    uint32_t state;
+    if(FPGA_SampMod_ReadState(&state) == HAL_OK)
+    {
+        return (state & 0x01);  // bit0=1表示采样完成
+    }
+    return 0;
+}
+
+/**
+ * 场景5：读取采样数据并处理
+ */
+void Read_And_Process_Data(void)
+{
+    uint16_t adc_data[1024];  // 数据缓冲区
+    uint16_t count;
+    
+    // 读取RAM1的1024个数据点
+    count = FPGA_SampMod_ReadRAMBatch(1, 0, 1024, adc_data);
+    
+    if(count == 1024)
+    {
+        // ✅ 读取成功，处理数据
+        for(uint16_t i = 0; i < count; i++)
+        {
+            // 你的数据处理代码
+            // 例如：找最大值、计算平均值、FFT分析等
+            // uint16_t value = adc_data[i];
+        }
+    }
+}
+
+/**
+ * 场景6：读取单个地址的数据
+ */
+uint16_t Read_Single_Point(uint8_t ramSelect, uint16_t address)
+{
+    uint16_t data = 0;
+    
+    if(ramSelect == 1)
+        FPGA_SampMod_ReadRAM1(address, &data);
+    else if(ramSelect == 2)
+        FPGA_SampMod_ReadRAM2(address, &data);
+    
+    return data;
+}
+
+/**
+ * 场景7：完整的采样流程示例
+ */
+void Complete_Sampling_Example(void)
+{
+    // 步骤1：设置DDS输出1kHz测试信号
+    DDS_SetOutputFrequency(1000);  // 1kHz
+    HAL_Delay(10);
+    
+    // 步骤2：启动采样2048个点
+    Start_ADC_Sampling(2048);
+    
+    // 步骤3：等待采样完成
+    uint16_t timeout = 1000;  // 超时计数
+    while(!Check_Sampling_Done() && timeout--)
+    {
+        HAL_Delay(10);
+    }
+    
+    // 步骤4：读取并处理数据
+    if(timeout > 0)
+    {
+        Read_And_Process_Data();
+    }
+}

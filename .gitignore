@@ -1,0 +1,59 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Node
+**/node_modules/
+
+# Keil / MDK generated files
+*.axf
+*.bin
+*.build_log.htm
+*.crf
+*.d
+*.dep
+*.hex
+*.htm
+*.iex
+*.lnp
+*.lst
+*.map
+*.o
+*.uvguix.*
+*.uvoptx
+**/DebugConfig/
+**/RTE/
+**/MDK-ARM/G_Project/
+**/MDK-ARM/spi_new/
+
+# Vivado / FPGA generated files
+*.backup.jou
+*.backup.log
+*.jou
+*.log
+*.str
+*.wdb
+*.wdf
+*.wpc
+*.xpr.user
+**/.Xil/
+**/.trae/
+**/G_Project.cache/
+**/G_Project.runs/
+**/G_Project.sim/
+**/G_Project.ip_user_files/
+**/ip_user_files/
+**/sim/
+
+# Temporary / local files
+*.bak
+*.tmp
+min_area_pfile.tmp
+
+# Embedded / auxiliary repos
+**/mcp-webresearch/
+
+# Local workflow metadata
+.spec-workflow/
