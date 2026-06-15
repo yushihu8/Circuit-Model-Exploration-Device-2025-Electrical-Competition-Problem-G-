@@ -18,8 +18,8 @@
 ```text
 .
 ├── G_project+FPGA/          FPGA / Vivado 工程
-├── G_Project-32H7/          STM32H743 主控工程
-├── G_2025Y-32F4/            STM32F407 早期/兼容版本工程
+├── G_Project-32H7/          STM32H743 主控工程(STM32H7版)
+├── G_2025Y-32F4/            STM32F407 主控工程(STM32F4版)
 ├── G题_电路模型探究装置.pdf    赛题原文
 ├── 工程实现分析总结.md       项目原理与实现说明
 └── README.md
